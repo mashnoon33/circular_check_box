@@ -1,8 +1,10 @@
 name: circular_check_box
-description: A new Flutter package project.
-version: 0.0.1
+description: Same as the regular checkbox, but circular!
+version: 0.0.2
 author: Mash Ibtesum <mashnoon33@gmail.com>
 homepage: http://cs.mash.studio/
+repository: https://github.com/mashnoon33/circular_check_box.git
+
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
