@@ -34,6 +34,8 @@ class CircularCheckBox extends StatefulWidget {
     this.tristate = false,
     @required this.onChanged,
     this.activeColor,
+    this.inactiveColor,
+    this.disabledColor,
     this.materialTapTargetSize,
   })  : assert(tristate != null),
         assert(tristate || value != null),
@@ -77,6 +79,8 @@ class CircularCheckBox extends StatefulWidget {
   ///
   /// Defaults to [ThemeData.toggleableActiveColor].
   final Color activeColor;
+  final Color inactiveColor;
+  final Color disabledColor;
 
   /// If true the CircularCheckBox's [value] can be true, false, or null.
   ///
@@ -128,8 +132,8 @@ class _CircularCheckBoxState extends State<CircularCheckBox>
       tristate: widget.tristate,
       activeColor: widget.activeColor ?? themeData.toggleableActiveColor,
       inactiveColor: widget.onChanged != null
-          ? themeData.unselectedWidgetColor
-          : themeData.disabledColor,
+          ? widget.inactiveColor ?? themeData.unselectedWidgetColor
+          : widget.disabledColor ?? themeData.disabledColor,
       onChanged: widget.onChanged,
       additionalConstraints: additionalConstraints,
       vsync: this,
@@ -300,7 +304,7 @@ class _RenderCircularCheckBox extends RenderToggleable {
       final Paint paint = Paint()..color = _colorAt(t);
 
       final Paint paintX = Paint()
-        ..color = Color.lerp(Colors.black26, Colors.red, position.value)
+        ..color = Color.lerp(inactiveColor, Colors.red, position.value)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.0;
       if (t <= 0.5) {
