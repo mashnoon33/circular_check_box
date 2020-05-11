@@ -21,3 +21,7 @@ Add the use of FocusNode and autofocus using FocusableActionDetector
 Add the use of VisualDensity
 Change the way the circular border is drawn, using Paint's strokeWidth and style
 Added example
+
+## [1.0.3] - 05/11/2020
+
+Fixed compile-time error on new Flutter 1.17

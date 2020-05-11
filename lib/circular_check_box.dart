@@ -1,4 +1,4 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
+// Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -17,11 +17,28 @@ import 'package:flutter/widgets.dart';
 /// his behaviour is the same except this draws a circular shape instead of
 /// a squared.
 ///
+/// The checkbox itself does not maintain any state. Instead, when the state of
+/// the checkbox changes, the widget calls the [onChanged] callback. Most
+/// widgets that use a checkbox will listen for the [onChanged] callback and
+/// rebuild the checkbox with a new [value] to update the visual appearance of
+/// the checkbox.
+///
+/// The checkbox can optionally display three values - true, false, and null -
+/// if [tristate] is true. When [value] is null a dash is displayed. By default
+/// [tristate] is false and the checkbox's [value] must be true or false.
+///
 /// Requires one of its ancestors to be a [Material] widget.
 ///
 /// See also:
 ///
 ///  * [Checkbox]
+///  * [CircularCheckBoxListTile], which combines this widget with a [ListTile] so that
+///    you can give the checkbox a label.
+///  * [Switch], a widget with semantics similar to [CircularCheckBox].
+///  * [Radio], for selecting among a set of explicit values.
+///  * [Slider], for selecting a value in a range.
+///  * <https://material.io/design/components/selection-controls.html#checkboxes>
+///  * <https://material.io/design/components/lists.html#types>
 class CircularCheckBox extends StatefulWidget {
   /// Creates a material design circular checkbox.
   ///
@@ -121,7 +138,7 @@ class CircularCheckBox extends StatefulWidget {
 
   /// If true the checkbox's [value] can be true, false, or null.
   ///
-  /// Checkbox displays a dash when its value is null.
+  /// CircularCheckBox displays a dash when its value is null.
   ///
   /// When a tri-state checkbox ([tristate] is true) is tapped, its [onChanged]
   /// callback will be applied to true if the current value is false, to null if
@@ -165,17 +182,17 @@ class CircularCheckBox extends StatefulWidget {
 
 class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProviderStateMixin {
   bool get enabled => widget.onChanged != null;
-  Map<Type, Action<Intent>> _actionMap;
+  Map<LocalKey, ActionFactory> _actionMap;
 
   @override
   void initState() {
     super.initState();
-    _actionMap = <Type, Action<Intent>>{
-      ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: _actionHandler),
+    _actionMap = <LocalKey, ActionFactory>{
+      ActivateAction.key: _createAction,
     };
   }
 
-  void _actionHandler(ActivateIntent intent){
+  void _actionHandler(FocusNode node, Intent intent) {
     if (widget.onChanged != null) {
       switch (widget.value) {
         case false:
@@ -189,8 +206,15 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
           break;
       }
     }
-    final RenderObject renderObject = context.findRenderObject();
+    final RenderObject renderObject = node.context.findRenderObject();
     renderObject.sendSemanticsEvent(const TapSemanticEvent());
+  }
+
+  Action _createAction() {
+    return CallbackAction(
+      ActivateAction.key,
+      onInvoke: _actionHandler,
+    );
   }
 
   bool _focused = false;
