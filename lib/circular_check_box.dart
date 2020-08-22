@@ -4,6 +4,7 @@
 
 // Modified by Mash Ibtesum
 // Modified by Lorenzo Calisti
+// Modified by Ben Stein
 
 library circular_check_box;
 
@@ -54,10 +55,11 @@ class CircularCheckBox extends StatefulWidget {
     this.visualDensity,
     this.focusNode,
     this.autofocus = false,
-  }) : assert(tristate != null),
-      assert(tristate || value != null),
-      assert(autofocus != null),
-      super(key: key);
+    this.roundedCap = false,
+  })  : assert(tristate != null),
+        assert(tristate || value != null),
+        assert(autofocus != null),
+        super(key: key);
 
   /// Whether this checkbox is checked.
   ///
@@ -156,6 +158,11 @@ class CircularCheckBox extends StatefulWidget {
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
 
+  /// If true the checkbox stroke will be rounded at both ends.
+  ///
+  /// Defaults to false.
+  final bool roundedCap;
+
   /// The width of a checkbox widget.
   static const double width = 18.0;
 
@@ -175,7 +182,7 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
     };
   }
 
-  void _actionHandler(ActivateIntent intent){
+  void _actionHandler(ActivateIntent intent) {
     if (widget.onChanged != null) {
       switch (widget.value) {
         case false:
@@ -196,14 +203,18 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
   bool _focused = false;
   void _handleFocusHighlightChanged(bool focused) {
     if (focused != _focused) {
-      setState(() { _focused = focused; });
+      setState(() {
+        _focused = focused;
+      });
     }
   }
 
   bool _hovering = false;
   void _handleHoverChanged(bool hovering) {
     if (hovering != _hovering) {
-      setState(() { _hovering = hovering; });
+      setState(() {
+        _hovering = hovering;
+      });
     }
   }
 
@@ -214,13 +225,15 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
     Size size;
     switch (widget.materialTapTargetSize ?? themeData.materialTapTargetSize) {
       case MaterialTapTargetSize.padded:
-        size = const Size(2 * kRadialReactionRadius + 8.0, 2 * kRadialReactionRadius + 8.0);
+        size = const Size(
+            2 * kRadialReactionRadius + 8.0, 2 * kRadialReactionRadius + 8.0);
         break;
       case MaterialTapTargetSize.shrinkWrap:
         size = const Size(2 * kRadialReactionRadius, 2 * kRadialReactionRadius);
         break;
     }
-    size += (widget.visualDensity ?? themeData.visualDensity).baseSizeAdjustment;
+    size +=
+        (widget.visualDensity ?? themeData.visualDensity).baseSizeAdjustment;
     final BoxConstraints additionalConstraints = BoxConstraints.tight(size);
     return FocusableActionDetector(
       actions: _actionMap,
@@ -236,9 +249,9 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
             tristate: widget.tristate,
             activeColor: widget.activeColor ?? themeData.toggleableActiveColor,
             checkColor: widget.checkColor ?? const Color(0xFFFFFFFF),
-            inactiveColor: enabled ?
-            widget.inactiveColor ?? themeData.unselectedWidgetColor:
-            widget.disabledColor ?? themeData.disabledColor,
+            inactiveColor: enabled
+                ? widget.inactiveColor ?? themeData.unselectedWidgetColor
+                : widget.disabledColor ?? themeData.disabledColor,
             focusColor: widget.focusColor ?? themeData.focusColor,
             hoverColor: widget.hoverColor ?? themeData.hoverColor,
             onChanged: widget.onChanged,
@@ -246,6 +259,7 @@ class _CircularCheckBoxState extends State<CircularCheckBox> with TickerProvider
             vsync: this,
             hasFocus: _focused,
             hovering: _hovering,
+            roundedCap: widget.roundedCap ?? false,
           );
         },
       ),
@@ -268,17 +282,19 @@ class _CircularCheckBoxRenderObjectWidget extends LeafRenderObjectWidget {
     @required this.additionalConstraints,
     @required this.hasFocus,
     @required this.hovering,
-  }) : assert(tristate != null),
-      assert(tristate || value != null),
-      assert(activeColor != null),
-      assert(inactiveColor != null),
-      assert(vsync != null),
-      super(key: key);
+    @required this.roundedCap,
+  })  : assert(tristate != null),
+        assert(tristate || value != null),
+        assert(activeColor != null),
+        assert(inactiveColor != null),
+        assert(vsync != null),
+        super(key: key);
 
   final bool value;
   final bool tristate;
   final bool hasFocus;
   final bool hovering;
+  final bool roundedCap;
   final Color activeColor;
   final Color checkColor;
   final Color inactiveColor;
@@ -289,23 +305,26 @@ class _CircularCheckBoxRenderObjectWidget extends LeafRenderObjectWidget {
   final BoxConstraints additionalConstraints;
 
   @override
-  _RenderCircularCheckBox createRenderObject(BuildContext context) => _RenderCircularCheckBox(
-    value: value,
-    tristate: tristate,
-    activeColor: activeColor,
-    checkColor: checkColor,
-    inactiveColor: inactiveColor,
-    focusColor: focusColor,
-    hoverColor: hoverColor,
-    onChanged: onChanged,
-    vsync: vsync,
-    additionalConstraints: additionalConstraints,
-    hasFocus: hasFocus,
-    hovering: hovering,
-  );
+  _RenderCircularCheckBox createRenderObject(BuildContext context) =>
+      _RenderCircularCheckBox(
+        value: value,
+        tristate: tristate,
+        activeColor: activeColor,
+        checkColor: checkColor,
+        inactiveColor: inactiveColor,
+        focusColor: focusColor,
+        hoverColor: hoverColor,
+        onChanged: onChanged,
+        vsync: vsync,
+        additionalConstraints: additionalConstraints,
+        hasFocus: hasFocus,
+        hovering: hovering,
+        roundedCap: roundedCap,
+      );
 
   @override
-  void updateRenderObject(BuildContext context, _RenderCircularCheckBox renderObject) {
+  void updateRenderObject(
+      BuildContext context, _RenderCircularCheckBox renderObject) {
     renderObject
       ..value = value
       ..tristate = tristate
@@ -338,29 +357,30 @@ class _RenderCircularCheckBox extends RenderToggleable {
     ValueChanged<bool> onChanged,
     bool hasFocus,
     bool hovering,
+    this.roundedCap,
     @required TickerProvider vsync,
-  }) : _oldValue = value,
-      super(
-      value: value,
-      tristate: tristate,
-      activeColor: activeColor,
-      inactiveColor: inactiveColor,
-      focusColor: focusColor,
-      hoverColor: hoverColor,
-      onChanged: onChanged,
-      additionalConstraints: additionalConstraints,
-      vsync: vsync,
-      hasFocus: hasFocus,
-      hovering: hovering,
-    );
+  })  : _oldValue = value,
+        super(
+        value: value,
+        tristate: tristate,
+        activeColor: activeColor,
+        inactiveColor: inactiveColor,
+        focusColor: focusColor,
+        hoverColor: hoverColor,
+        onChanged: onChanged,
+        additionalConstraints: additionalConstraints,
+        vsync: vsync,
+        hasFocus: hasFocus,
+        hovering: hovering,
+      );
 
   bool _oldValue;
   Color checkColor;
+  bool roundedCap;
 
   @override
   set value(bool newValue) {
-    if (newValue == value)
-      return;
+    if (newValue == value) return;
     _oldValue = value;
     super.value = newValue;
   }
@@ -376,10 +396,10 @@ class _RenderCircularCheckBox extends RenderToggleable {
   Color _colorAt(double t) {
     // As t goes from 0.0 to 0.25, animate from the inactiveColor to activeColor.
     return onChanged == null
-      ? inactiveColor
-      : (t >= 0.25
-      ? activeColor
-      : Color.lerp(inactiveColor, activeColor, t * 4.0));
+        ? inactiveColor
+        : (t >= 0.25
+        ? activeColor
+        : Color.lerp(inactiveColor, activeColor, t * 4.0));
   }
 
   // checkColor stroke used to paint the check and dash.
@@ -387,10 +407,12 @@ class _RenderCircularCheckBox extends RenderToggleable {
     return Paint()
       ..color = checkColor
       ..style = PaintingStyle.stroke
+      ..strokeCap = roundedCap ? StrokeCap.round : StrokeCap.butt
       ..strokeWidth = _kStrokeWidth;
   }
 
-  void _drawCircleBorder(Canvas canvas, Offset center, double radius, double t, Paint paint) {
+  void _drawCircleBorder(
+      Canvas canvas, Offset center, double radius, double t, Paint paint) {
     assert(t >= 0.0 && t <= 0.5);
     paint
       ..strokeWidth = _kStrokeWidth
@@ -439,11 +461,13 @@ class _RenderCircularCheckBox extends RenderToggleable {
     paintRadialReaction(canvas, offset, size.center(Offset.zero));
 
     final Paint strokePaint = _createStrokePaint();
-    final Offset origin = offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0 as Offset);
+    final Offset origin =
+        offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0 as Offset);
     final AnimationStatus status = position.status;
-    final double tNormalized = status == AnimationStatus.forward || status == AnimationStatus.completed
-      ? position.value
-      : 1.0 - position.value;
+    final double tNormalized =
+    status == AnimationStatus.forward || status == AnimationStatus.completed
+        ? position.value
+        : 1.0 - position.value;
     final Offset center = (offset & size).center;
 
     // Four cases: false to null, false to true, null to false, true to false
@@ -454,7 +478,7 @@ class _RenderCircularCheckBox extends RenderToggleable {
       if (t <= 0.5) {
         _drawCircleBorder(canvas, center, 11, t, paint);
       } else {
-        canvas.drawCircle(center, 13, paint);
+        canvas.drawCircle(center, 12, paint);
 
         final double tShrink = (t - 0.5) * 2.0;
         if (_oldValue == null || value == null)
@@ -464,7 +488,7 @@ class _RenderCircularCheckBox extends RenderToggleable {
       }
     } else {
       // Two cases: null to true, true to null
-      final Paint paint = Paint() ..color = _colorAt(1.0);
+      final Paint paint = Paint()..color = _colorAt(1.0);
       canvas.drawCircle(center, 12, paint);
 
       if (tNormalized <= 0.5) {
