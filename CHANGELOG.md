@@ -1,3 +1,6 @@
+## [1.0.4] - 05/11/2020
+Bumped the version, supports flutter 1.20 and up. Use version 1.0.3 of the plugin for 1.17 support
+
 ## [1.0.3] - 05/11/2020
 
 Fixed compile-time error on new Flutter 1.17
