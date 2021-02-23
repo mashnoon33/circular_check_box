@@ -34,6 +34,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool normalSelected = true;
   bool circularSelected = true;
+  bool? circularTriSelected;
+  bool circularStyledSelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -41,50 +43,57 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ListTile(
-              leading: Checkbox(
-                value: this.normalSelected,
-                checkColor: Colors.white,
-                activeColor: Colors.green,
-                onChanged: (val) => this.setState(
-                  () {
-                    this.normalSelected = !this.normalSelected;
-                  },
-                ),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: CircularCheckBox(
+              value: this.circularSelected,
+              onChanged: (val) => this.setState(
+                () {
+                  this.circularSelected = !this.circularSelected;
+                },
               ),
-              title: Text("Click me"),
-              onTap: () => setState(() {
-                this.normalSelected = !this.normalSelected;
-              }),
             ),
-            ListTile(
-              leading: CircularCheckBox(
-                value: this.circularSelected,
-                checkColor: Colors.white,
-                activeColor: Colors.green,
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.disabled))
-                    return Colors.grey;
-                  if (states.contains(MaterialState.error))
-                    return Colors.red;
-                }),
-                onChanged: (val) => this.setState(
-                  () {
-                    this.circularSelected = !this.circularSelected;
-                  },
-                ),
+            title: Text("Normal circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(
+              tristate: true,
+              value: this.circularTriSelected,
+              onChanged: (val) => this.setState(
+                () {
+                  this.circularTriSelected = val;
+                },
               ),
-              title: Text("Click me"),
-              onTap: () => this.setState(() {
-                this.circularSelected = !this.circularSelected;
-              }),
             ),
-          ],
-        ),
+            title: Text("Tri-state circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(value: true, onChanged: null),
+            title: Text("Disabled checked circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(value: false, onChanged: null),
+            title: Text("Disabled unchecked circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(
+              value: this.circularStyledSelected,
+              checkColor: Colors.black,
+              activeColor: Colors.green,
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.hovered))
+                  return Colors.yellow;
+              }),
+              onChanged: (val) => this.setState(
+                () {
+                  this.circularStyledSelected = !this.circularStyledSelected;
+                },
+              ),
+            ),
+            title: Text("Styled circular checkbox"),
+          ),
+        ],
       ),
     );
   }
