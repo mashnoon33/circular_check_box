@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Circular Checkbox Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -20,16 +20,22 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
+
+  MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool selected = true;
+  bool normalSelected = true;
+  bool circularSelected = true;
+  bool? circularTriSelected;
+  bool circularStyledSelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -37,46 +43,57 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ListTile(
-              leading: Checkbox(
-                value: this.selected,
-                checkColor: Colors.white,
-                activeColor: Colors.green,
-                onChanged: (val) => this.setState(
-                  () {
-                    this.selected = !this.selected;
-                  },
-                ),
-              ),
-              title: Text("Click me"),
-              onTap: () => setState(() => this.selected = !this.selected),
-            ),
-            ListTile(
-              leading: CircularCheckBox(
-                value: this.selected,
-                checkColor: Colors.white,
-                activeColor: Colors.green,
-                inactiveColor: Colors.redAccent,
-                disabledColor: Colors.grey,
-                onChanged: (val) => this.setState(
-                  () {
-                    this.selected = !this.selected;
-                  },
-                ),
-              ),
-              title: Text("Click me"),
-              onTap: () => this.setState(
+      body: ListView(
+        children: [
+          ListTile(
+            leading: CircularCheckBox(
+              value: this.circularSelected,
+              onChanged: (val) => this.setState(
                 () {
-                  this.selected = !this.selected;
+                  this.circularSelected = !this.circularSelected;
                 },
               ),
             ),
-          ],
-        ),
+            title: Text("Normal circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(
+              tristate: true,
+              value: this.circularTriSelected,
+              onChanged: (val) => this.setState(
+                () {
+                  this.circularTriSelected = val;
+                },
+              ),
+            ),
+            title: Text("Tri-state circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(value: true, onChanged: null),
+            title: Text("Disabled checked circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(value: false, onChanged: null),
+            title: Text("Disabled unchecked circular checkbox"),
+          ),
+          ListTile(
+            leading: CircularCheckBox(
+              value: this.circularStyledSelected,
+              checkColor: Colors.black,
+              activeColor: Colors.green,
+              fillColor: MaterialStateProperty.resolveWith((states) {
+                if (states.contains(MaterialState.hovered))
+                  return Colors.yellow;
+              }),
+              onChanged: (val) => this.setState(
+                () {
+                  this.circularStyledSelected = !this.circularStyledSelected;
+                },
+              ),
+            ),
+            title: Text("Styled circular checkbox"),
+          ),
+        ],
       ),
     );
   }
