@@ -66,8 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: this.circularSelected,
                 checkColor: Colors.white,
                 activeColor: Colors.green,
-                inactiveColor: Colors.redAccent,
-                disabledColor: Colors.grey,
+                fillColor: MaterialStateProperty.resolveWith((states) {
+                  if (states.contains(MaterialState.disabled))
+                    return Colors.grey;
+                  if (states.contains(MaterialState.error))
+                    return Colors.red;
+                }),
                 onChanged: (val) => this.setState(
                   () {
                     this.circularSelected = !this.circularSelected;
