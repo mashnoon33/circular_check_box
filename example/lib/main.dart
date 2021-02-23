@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Circular Checkbox Example',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -20,16 +20,20 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
   final String title;
+
+  MyHomePage({
+    Key? key,
+    required this.title,
+  }) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool selected = true;
+  bool normalSelected = true;
+  bool circularSelected = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,37 +47,37 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ListTile(
               leading: Checkbox(
-                value: this.selected,
+                value: this.normalSelected,
                 checkColor: Colors.white,
                 activeColor: Colors.green,
                 onChanged: (val) => this.setState(
                   () {
-                    this.selected = !this.selected;
+                    this.normalSelected = !this.normalSelected;
                   },
                 ),
               ),
               title: Text("Click me"),
-              onTap: () => setState(() => this.selected = !this.selected),
+              onTap: () => setState(() {
+                this.normalSelected = !this.normalSelected;
+              }),
             ),
             ListTile(
               leading: CircularCheckBox(
-                value: this.selected,
+                value: this.circularSelected,
                 checkColor: Colors.white,
                 activeColor: Colors.green,
                 inactiveColor: Colors.redAccent,
                 disabledColor: Colors.grey,
                 onChanged: (val) => this.setState(
                   () {
-                    this.selected = !this.selected;
+                    this.circularSelected = !this.circularSelected;
                   },
                 ),
               ),
               title: Text("Click me"),
-              onTap: () => this.setState(
-                () {
-                  this.selected = !this.selected;
-                },
-              ),
+              onTap: () => this.setState(() {
+                this.circularSelected = !this.circularSelected;
+              }),
             ),
           ],
         ),

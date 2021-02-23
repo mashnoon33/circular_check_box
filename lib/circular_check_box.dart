@@ -4,7 +4,7 @@
 
 // Modified by Mash Ibtesum
 // Modified by Lorenzo Calisti
-
+// @dart=2.9
 library circular_check_box;
 
 import 'package:flutter/material.dart';
