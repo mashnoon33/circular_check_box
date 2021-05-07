@@ -14,6 +14,15 @@ Add this to your package's `pubspec.yaml` file.
 dependencies:
    circular_check_box: ^x.y.z
 ```
+Or
+
+
+```yaml
+dependencies:
+   circular_check_box:
+       git:
+         url: git://github.com/mashnoon33/circular_check_box.git
+```
 
 Now in your `Dart` code you can use:
 
